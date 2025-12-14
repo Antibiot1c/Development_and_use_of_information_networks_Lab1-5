@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Feed — InstaLite{% endblock %}
+{% block content %}
+
+<div class="layout-app">
+  <aside class="sidebar">
+    <div class="card pad">
+      <div class="row">
+        <div class="avatar">
+          <img src="{{ avatar(me.username) }}" alt="avatar" />
+        </div>
+        <div class="stack" style="gap:2px">
+          <div style="font-weight:800">{{ me.username }}</div>
+          <div class="tiny">Signed in</div>
+        </div>
+      </div>
+      <div class="hr"></div>
+      <div class="menu stack" style="gap:6px">
+        <a href="/app">Feed</a>
+        <a href="/profile/{{ me.username }}">Profile</a>
+        <a href="/docs" target="_blank">API Docs</a>
+      </div>
+    </div>
+
+    <div class="card pad soft">
+      <div class="pill">Quick tips</div>
+      <div class="muted small" style="margin-top:10px">
+        Use the form to create a post. Likes, comments, follow/unfollow are handled as
+        page actions with redirects (no JSON pages).
+      </div>
+    </div>
+  </aside>
+
+  <section class="feed">
+    <div class="card pad">
+      <div class="row" style="justify-content:space-between; align-items:flex-start">
+        <div class="stack" style="gap:6px; flex:1">
+          <div style="font-weight:800; font-size:18px">Create post</div>
+          <form method="post" action="/actions/post" class="stack" style="gap:10px">
+            <textarea name="caption" placeholder="Write a caption..."></textarea>
+            <input class="input" name="image_url" placeholder="Image URL (optional)" />
+            <button class="btn primary" type="submit">Publish</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    {% for p in posts %}
+      <article class="card post">
+        <div class="post__head">
+          <div class="who">
+            <a class="avatar" href="/profile/{{ p.author.username }}">
+              <img src="{{ avatar(p.author.username) }}" alt="avatar" />
+            </a>
+            <div class="stack" style="gap:2px">
+              <div>
+                <a href="/profile/{{ p.author.username }}"><strong>{{ p.author.username }}</strong></a>
+                <span class="tiny">• {{ p.created_at.strftime("%Y-%m-%d %H:%M") if p.created_at else "" }}</span>
+              </div>
+              <div class="tiny">Post</div>
+            </div>
+          </div>
+          <a class="pill" href="/profile/{{ p.author.username }}">View profile</a>
+        </div>
+
+        {% if p.image_path %}
+          <div class="post__img">
+            <img src="{{ p.image_path }}" alt="post image" />
+          </div>
+        {% endif %}
+
+        <div class="post__body">
+          {% if p.caption %}
+            <div>{{ p.caption }}</div>
+          {% endif %}
+
+          <div class="post__actions">
+            {% if p.id in liked_set %}
+              <form method="post" action="/actions/unlike/{{ p.id }}" style="display:inline">
+                <button class="btn" type="submit">♥ Liked</button>
+              </form>
+            {% else %}
+              <form method="post" action="/actions/like/{{ p.id }}" style="display:inline">
+                <button class="btn" type="submit">♡ Like</button>
+              </form>
+            {% endif %}
+
+            <span class="kpi">
+              <span>Likes: {{ like_map.get(p.id, 0) }}</span>
+              <span>Comments: {{ comment_map.get(p.id, 0) }}</span>
+            </span>
+          </div>
+
+          <form method="post" action="/actions/comment/{{ p.id }}" class="row" style="gap:10px">
+            <input class="input" name="text" placeholder="Write a comment..." />
+            <button class="btn" type="submit">Send</button>
+          </form>
+        </div>
+      </article>
+    {% else %}
+      <div class="card pad">
+        <div style="font-weight:800; font-size:18px">No posts yet</div>
+        <div class="muted small" style="margin-top:8px">Create the first post above.</div>
+      </div>
+    {% endfor %}
+  </section>
+
+  <aside class="sidebar right">
+    <div class="card pad soft">
+      <div class="pill">Your profile</div>
+      <div class="row" style="margin-top:12px">
+        <div class="avatar"><img src="{{ avatar(me.username) }}" alt="avatar" /></div>
+        <div class="stack" style="gap:2px">
+          <div style="font-weight:800">{{ me.username }}</div>
+          <div class="tiny">/profile/{{ me.username }}</div>
+        </div>
+      </div>
+      <div class="hr"></div>
+      <a class="btn full" href="/profile/{{ me.username }}">Open profile</a>
+    </div>
+
+    <div class="card pad">
+      <div class="pill">Suggestions</div>
+      <div class="muted small" style="margin-top:10px">
+        Visit any profile URL like <code>/profile/alice</code> and follow users.
+      </div>
+    </div>
+  </aside>
+</div>
+
+{% endblock %}

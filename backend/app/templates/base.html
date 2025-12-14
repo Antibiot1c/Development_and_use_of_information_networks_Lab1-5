@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}InstaLite{% endblock %}</title>
+  <link rel="icon" href="/static/favicon.ico" />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="brand" href="{% if me is defined and me %}/app{% else %}/{% endif %}">
+        <span class="brand__dot"></span>
+        <span>InstaLite</span>
+      </a>
+
+      <nav class="nav">
+        {% if me is defined and me %}
+          <a href="/app">Feed</a>
+          <a href="/profile/{{ me.username }}">Profile</a>
+          <form method="post" action="/logout" style="display:inline">
+            <button class="btn ghost" type="submit">Logout</button>
+          </form>
+          <a class="pill" href="/profile/{{ me.username }}" title="Your profile">
+            <span class="avatar">
+              {% if avatar is defined %}<img src="{{ avatar(me.username) }}" alt="avatar" />{% endif %}
+            </span>
+            <span class="small">{{ me.username }}</span>
+          </a>
+        {% else %}
+          <a href="/about">About</a>
+          <a href="/login">Login</a>
+          <a class="cta" href="/register">Create account</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div>InstaLite Labs • FastAPI + SQLAlchemy + Jinja</div>
+    <div>Backend • Frontend • API • Deploy • Security</div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}About — InstaLite{% endblock %}
+{% block content %}
+<div class="card pad">
+  <h2 style="margin:0 0 8px">About</h2>
+  <p class="muted" style="margin:0 0 12px">
+    This project is designed for a full web-dev lab series:
+    backend + frontend + API + deployment/performance + security.
+  </p>
+  <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+    <div class="card pad soft">
+      <div class="pill">Lab 1</div>
+      <div class="muted small" style="margin-top:8px">Backend, DB, SSR pages, static content, user auth, admin.</div>
+    </div>
+    <div class="card pad soft">
+      <div class="pill">Lab 2</div>
+      <div class="muted small" style="margin-top:8px">Frontend SPA, UI updates, local storage, API integration.</div>
+    </div>
+    <div class="card pad soft">
+      <div class="pill">Lab 3</div>
+      <div class="muted small" style="margin-top:8px">REST API for data and user actions with auth.</div>
+    </div>
+    <div class="card pad soft">
+      <div class="pill">Lab 4</div>
+      <div class="muted small" style="margin-top:8px">Docker deployment + basic performance measurement.</div>
+    </div>
+    <div class="card pad soft">
+      <div class="pill">Lab 5</div>
+      <div class="muted small" style="margin-top:8px">Security checks (dependency audit, OWASP ZAP, manual review).</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

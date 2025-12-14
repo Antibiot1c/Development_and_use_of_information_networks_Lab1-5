@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}InstaLite — Home{% endblock %}
+{% block content %}
+<section class="card hero">
+  <div class="split">
+    <div>
+      <h1>Instagram-style lab project, polished UI.</h1>
+      <p>
+        A small social app with posts, likes, comments, follows, user auth, and admin features.
+        Built for Labs 1–5 (backend, frontend, REST API, deploy/perf, security).
+      </p>
+      <div class="actions">
+        <a class="btn primary" href="/register">Create account</a>
+        <a class="btn" href="/login">Login</a>
+        <a class="btn ghost" href="/docs">API Docs</a>
+      </div>
+      <div class="hr"></div>
+      <div class="kpi">
+        <span class="pill">Dynamic pages (Jinja)</span>
+        <span class="pill">Database (SQLite/Postgres)</span>
+        <span class="pill">REST API</span>
+        <span class="pill">Docker deploy</span>
+      </div>
+    </div>
+
+    <div class="card pad soft">
+      <div class="stack">
+        <div class="muted small">Latest posts preview</div>
+        {% if posts %}
+          {% for p in posts[:3] %}
+            <div class="row">
+              <div class="avatar">
+                {% if avatar is defined %}<img src="{{ avatar(p.author.username) }}" alt="avatar" />{% endif %}
+              </div>
+              <div class="stack" style="gap:4px">
+                <div><strong>{{ p.author.username }}</strong> <span class="tiny">• {{ p.created_at.strftime("%Y-%m-%d %H:%M") if p.created_at else "" }}</span></div>
+                <div class="muted small">{{ p.caption }}</div>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="muted">No posts yet. Register and create the first one.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

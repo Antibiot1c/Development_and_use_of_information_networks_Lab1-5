@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Profile — InstaLite{% endblock %}
+{% block content %}
+
+<div class="layout-app">
+  <aside class="sidebar">
+    <div class="card pad">
+      <div class="row">
+        <div class="avatar">
+          <img src="{{ avatar(me.username) }}" alt="avatar" />
+        </div>
+        <div class="stack" style="gap:2px">
+          <div style="font-weight:800">{{ me.username }}</div>
+          <div class="tiny">Signed in</div>
+        </div>
+      </div>
+      <div class="hr"></div>
+      <div class="menu stack" style="gap:6px">
+        <a href="/app">Feed</a>
+        <a href="/profile/{{ me.username }}">My profile</a>
+        <a href="/">Landing</a>
+      </div>
+    </div>
+  </aside>
+
+  <section class="feed">
+    <div class="card pad">
+      <div class="row" style="justify-content:space-between; align-items:flex-start">
+        <div class="row" style="align-items:flex-start; gap:14px">
+          <div class="avatar" style="width:58px;height:58px">
+            <img src="{{ avatar(user.username) }}" alt="avatar" />
+          </div>
+          <div class="stack" style="gap:6px">
+            <div style="font-weight:900; font-size:22px">{{ user.username }}</div>
+            <div class="kpi">
+              <span>Posts: {{ posts|length }}</span>
+              <span>Followers: {{ follower_count }}</span>
+              <span>Following: {{ following_count }}</span>
+            </div>
+            <div class="tiny">Profile page</div>
+          </div>
+        </div>
+
+        {% if me.username != user.username %}
+          {% if follows %}
+            <form method="post" action="/actions/unfollow/{{ user.username }}">
+              <button class="btn danger" type="submit">Unfollow</button>
+            </form>
+          {% else %}
+            <form method="post" action="/actions/follow/{{ user.username }}">
+              <button class="btn primary" type="submit">Follow</button>
+            </form>
+          {% endif %}
+        {% else %}
+          <a class="btn" href="/app">Back to feed</a>
+        {% endif %}
+      </div>
+    </div>
+
+    {% for p in posts %}
+      <article class="card post">
+        <div class="post__head">
+          <div class="who">
+            <span class="avatar"><img src="{{ avatar(user.username) }}" alt="avatar" /></span>
+            <div class="stack" style="gap:2px">
+              <div><strong>{{ user.username }}</strong> <span class="tiny">• {{ p.created_at.strftime("%Y-%m-%d %H:%M") if p.created_at else "" }}</span></div>
+              <div class="tiny">Post</div>
+            </div>
+          </div>
+        </div>
+
+        {% if p.image_path %}
+          <div class="post__img">
+            <img src="{{ p.image_path }}" alt="post image" />
+          </div>
+        {% endif %}
+
+        <div class="post__body">
+          {% if p.caption %}<div>{{ p.caption }}</div>{% endif %}
+        </div>
+      </article>
+    {% else %}
+      <div class="card pad">
+        <div style="font-weight:800; font-size:18px">No posts</div>
+        <div class="muted small" style="margin-top:8px">This user has not posted yet.</div>
+      </div>
+    {% endfor %}
+  </section>
+
+  <aside class="sidebar right">
+    <div class="card pad soft">
+      <div class="pill">Actions</div>
+      <div class="stack" style="margin-top:12px">
+        <a class="btn full" href="/app">Open feed</a>
+        <a class="btn full" href="/docs" target="_blank">API Docs</a>
+      </div>
+    </div>
+  </aside>
+</div>
+
+{% endblock %}
